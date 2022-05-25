@@ -68,7 +68,7 @@ var fightOrSkip = function () {
     // ask player if they'd like to fight or skip 
     var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
 
-    if(promptFight === "" || promptFight === null) {
+    if (promptFight === "" || promptFight === null) {
         alert("You need to provide a valid answer. Please try again.");
         return fightOrSkip();
     }
@@ -92,43 +92,65 @@ var fightOrSkip = function () {
 var fight = function (enemy) {
     console.log(enemy);
 
+    // keep track of who goes first
+    var isPlayerTurn = true;
+
+    if (Math.random() > 0.5) {
+        isPlayerTurn = false;
+    }
+
     // repeat and execute as long as the enemy-robot is alive
     while (enemy.health > 0 && playerInfo.health > 0) {
 
-        // ask player if they'd like to fight or skip using fightOrSkip function
-        if(fightOrSkip()) {
-            
-            // if true, leave fight by breaking loop
-            break;
-        }
+        if (isPlayerTurn) {
+            // ask player if they'd like to fight or skip using fightOrSkip function
+            if (fightOrSkip()) {
 
-        // Remove enemy's health by subtracting the amount set in the playerInfo.attack variable
-        var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
-        enemy.health = Math.max(0, enemy.health - damage);
-        console.log(playerInfo.name + " atacked " + enemy.name + ". " + enemy.name + " now has " +
-            enemy.health + " health remaining.");
+                // if true, leave fight by breaking loop
+                break;
+            }
+            // remove enemy health
+            var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
 
-        // Check enemy's health
-        if (enemy.health <= 0) {
-            alert(enemy.name + " has died!");
-            break;
+            enemy.health = Math.max(0, enemy.health - damage);
+            console.log(playerInfo.name +
+                " atacked " +
+                enemy.name +
+                ". " +
+                enemy.name +
+                " now has " +
+                enemy.health +
+                " health remaining.");
+
+            // Check enemy's health
+            if (enemy.health <= 0) {
+                alert(enemy.name + " has died!");
+                break;
+            } else {
+                alert(enemy.name + " still has " + enemy.health + " health left.");
+            }
         } else {
-            alert(enemy.name + " still has " + enemy.health + " health left.");
-        }
+            // Remove Player's health by subtracting the amount set in the enemy.attack variable
+            var damage = randomNumber(enemy.attack - 3, enemy.attack);
 
-        // Remove Player's health by subtracting the amount set in the enemy.attack variable
-        var damage = randomNumber(enemy.attack - 3, enemy.attack);
-        playerInfo.health = Math.max(0, playerInfo.health - damage);
-        console.log(enemy.name + " attacked " +
-            playerInfo.name + ". " + playerInfo.name + " now has " + playerInfo.health + " health remaining.");
+            playerInfo.health = Math.max(0, playerInfo.health - damage);
+            console.log(enemy.name + " attacked " +
+                playerInfo.name + ". " + 
+                playerInfo.name + 
+                " now has " + 
+                playerInfo.health + 
+                " health remaining.");
 
-        // Check player's health
-        if (playerInfo.health <= 0) {
-            alert(playerInfo.name + " has died!");
-            break;
-        } else {
-            alert(playerInfo.name + " still has " + playerInfo.health + " health left.");
+            // Check player's health
+            if (playerInfo.health <= 0) {
+                alert(playerInfo.name + " has died!");
+                break;
+            } else {
+                alert(playerInfo.name + " still has " + playerInfo.health + " health left.");
+            }
         }
+        // switch turn order for next round
+        isPlayerTurn = !isPlayerTurn;
     }
 };
 var startGame = function () {
@@ -191,7 +213,7 @@ var shop = function () {
     // ask the player what they would like to do
     var shopOptionPrompt = parseInt(prompt("Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter 1 for 'REFILL', 2 for 'UPGRADE', or 3 for 'LEAVE' to make a choice."));
     switch (shopOptionPrompt) {
-        
+
         case 1:
             playerInfo.refillHealth();
             break;
