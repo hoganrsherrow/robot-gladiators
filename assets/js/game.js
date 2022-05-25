@@ -1,4 +1,17 @@
 console.log("Hello");
+
+// function to set name
+var getPlayerName = function () {
+    var name = "";
+
+    while (name === "" || name === null) {
+        name = prompt("What is your robot's name?");
+    }
+
+
+    return name;
+}
+
 var playerInfo = {
     name: getPlayerName(),
     health: 100,
@@ -32,8 +45,7 @@ var playerInfo = {
 // Logging variables
 console.log(playerInfo.name, playerInfo.health, playerInfo.attack);
 
-var enemyInfo = [
-    {
+var enemyInfo = [{
         name: "Roborto",
         attack: randomNumber(10, 14),
         shield: {
@@ -51,27 +63,43 @@ var enemyInfo = [
     }
 ];
 
+var fightOrSkip = function () {
+
+    // ask player if they'd like to fight or skip 
+    var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
+
+    if(promptFight === "" || promptFight === null) {
+        alert("You need to provide a valid answer. Please try again.");
+        return fightOrSkip();
+    }
+
+    if (promptFight.toLowerCase() === "skip") {
+        // confirm player wants to skip
+        var confirmSkip = window.confirm("Are you sure you'd like to skip?");
+        // if yes(true), leave fight
+        if (confirmSkip) {
+            alert(playerInfo.name + " has chosen to skip this fight. Goodbye!");
+            // subtract money from playerInfo.money for skipping
+            playerInfo.money = Math.max(0, playerInfo.money - 10);
+            console.log("playerInfo.money", playerInfo.money);
+
+            return true;
+        }
+    }
+    return false;
+}
+
 var fight = function (enemy) {
     console.log(enemy);
 
     // repeat and execute as long as the enemy-robot is alive
     while (enemy.health > 0 && playerInfo.health > 0) {
 
-        var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
-
-        if (promptFight === "skip" || promptFight === "SKIP") {
-            // confirm player wants to skip
-            var confirmSkip = window.confirm("Are you sure you'd like to skip?");
-            // if yes(true), leave fight
-            if (confirmSkip) {
-                alert(playerInfo.name + " has chosen to skip this fight. Goodbye!");
-                // subtract money from playerInfo.money for skipping
-                playerInfo.money = Math.max(0, playerInfo.money - 10);
-                console.log("playerInfo.money", playerInfo.money);
-                break;
-
-                // if no(false), ask question again by running fight() again
-            }
+        // ask player if they'd like to fight or skip using fightOrSkip function
+        if(fightOrSkip()) {
+            
+            // if true, leave fight by breaking loop
+            break;
         }
 
         // Remove enemy's health by subtracting the amount set in the playerInfo.attack variable
@@ -111,7 +139,7 @@ var startGame = function () {
         if (playerInfo.health > 0) {
             // let player know what round they are in
             alert("Welcome to Robot Gladiators! Round " + (i + 1));
-            debugger;
+
             // set enemy name
             var pickedEnemyObj = enemyInfo[i];
 
@@ -165,11 +193,11 @@ var shop = function () {
     switch (shopOptionPrompt) {
         case "REFILL":
         case "refill":
-           playerInfo.refillHealth();
+            playerInfo.refillHealth();
             break;
         case "UPGRADE":
         case "upgrade":
-           playerInfo.upgradeAttack();
+            playerInfo.upgradeAttack();
             break;
         case "LEAVE":
         case "leave":
@@ -193,15 +221,11 @@ function randomNumber(min, max) {
     return value;
 };
 
-// function to set name
-var getPlayerName = function() {
-    var name = "";
-
-    while(name === "" || name === null) {
-        name = prompt("What is your robot's name?");
+var test = function () {
+    var response = prompt("Question?");
+    if (response === "" || response === null) {
+        alert("You need to provide a valid answer! Please try again.");
+        test();
     }
-
-
-    return name;
 }
 startGame();
